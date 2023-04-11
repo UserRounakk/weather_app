@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/pages/city.dart';
 import 'package:weather_app/resources/colors.dart';
 import 'package:weather_app/resources/images.dart';
 
@@ -36,6 +37,7 @@ class _DashboardState extends State<Dashboard> {
             IconButton(
               icon: const Icon(Icons.settings),
               onPressed: () => {
+                Navigator.pushNamed(context, SelectCity.routeName)
                 // TODO: Implement Navigation
               },
             ),

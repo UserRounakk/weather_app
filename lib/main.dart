@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/pages/city.dart';
 import 'package:weather_app/pages/dashboard.dart';
 import 'package:weather_app/pages/splash.dart';
 import 'package:weather_app/pages/welcome.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => const SplashScreen(),
         Dashboard.routeName: (context) => const Dashboard(),
         Welcome.routeName: (context) => const Welcome(),
+        SelectCity.routeName: (context) => const SelectCity(),
       },
     );
   }
