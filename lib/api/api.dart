@@ -2,6 +2,8 @@ import 'package:http/http.dart' as http;
 import 'package:weather_app/env.dart';
 
 const String baseUrl = "api.openweathermap.org";
+const String locationUrl = "http://api.openweathermap.org/geo/1.0/direct?q=";
+const String weatherUrl = "http://api.openweathermap.org/data/2.5/weather?";
 const String appId = ENV.appId;
 
 class Api {
@@ -27,8 +29,9 @@ class Api {
           "lat": lat,
           "lon": lon,
           "appid": appId,
-          "unit": "metric"
+          "units": "metric"
         });
-    return await http.get(url, headers: {'Accept': 'application/json'});
+    var response = await http.get(url, headers: {'Accept': 'application/json'});
+    return response;
   }
 }
