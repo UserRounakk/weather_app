@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/pages/dashboard.dart';
+import 'package:weather_app/pages/welcome.dart';
 import 'package:weather_app/resources/dimensions.dart';
 import 'package:weather_app/resources/images.dart';
 
@@ -13,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 2500),
-        () => Navigator.popAndPushNamed(context, Dashboard.routeName));
+        () => Navigator.popAndPushNamed(context, Welcome.routeName));
     super.initState();
   }
 
@@ -29,6 +30,5 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
-    ;
   }
 }
