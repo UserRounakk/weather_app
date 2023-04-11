@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/pages/dashboard.dart';
+import 'package:weather_app/resources/dimensions.dart';
+import 'package:weather_app/resources/images.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,12 +12,23 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
+    Future.delayed(const Duration(milliseconds: 2500),
+        () => Navigator.popAndPushNamed(context, Dashboard.routeName));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: SizedBox(
+        height: Dimensions.height(context),
+        width: Dimensions.width(context),
+        child: Image.asset(
+          Images.splashscreen,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+    ;
   }
 }
