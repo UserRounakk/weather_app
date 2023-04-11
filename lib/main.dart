@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/pages/splash.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,13 +9,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "Weather App",
-        theme: ThemeData(
-            primarySwatch: Colors.blue,
-            primaryTextTheme: Typography().white,
-            scaffoldBackgroundColor: const Color(0xFF0B0C1E),
-            brightness: Brightness.dark),
-        initialRoute: "/",
-        routes: {});
+      title: "Weather App",
+      theme: ThemeData(
+          primarySwatch: Colors.blue,
+          primaryTextTheme: Typography().white,
+          scaffoldBackgroundColor: const Color(0xFF0B0C1E),
+          brightness: Brightness.dark),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => const SplashScreen(),
+      },
+    );
   }
 }
