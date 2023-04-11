@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app/pages/city.dart';
 import 'package:weather_app/resources/colors.dart';
 import 'package:weather_app/resources/dimensions.dart';
 import 'package:weather_app/resources/images.dart';
@@ -27,9 +28,8 @@ class _WelcomeState extends State<Welcome> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: TextButton(
-          onPressed: () {
-            // TODO: Implement Navigation
-          },
+          onPressed: () =>
+              Navigator.pushReplacementNamed(context, SelectCity.routeName),
           child: const Text(
             'Get Started',
             style: TextStyle(color: Colors.white, fontSize: 16),
