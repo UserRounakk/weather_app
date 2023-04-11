@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/pages/dashboard.dart';
 import 'package:weather_app/pages/splash.dart';
+import 'package:weather_app/pages/welcome.dart';
 
 void main() => runApp(const MyApp());
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => const SplashScreen(),
         Dashboard.routeName: (context) => const Dashboard(),
+        Welcome.routeName: (context) => const Welcome(),
       },
     );
   }
