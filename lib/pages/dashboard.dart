@@ -104,15 +104,6 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
             )
-
-            // Center(
-            //   child: Text(
-            //       snapshot.data['main']['temp'].round().toString() + "°",
-            //       style: const TextStyle(
-            //         fontSize: 40,
-            //         fontWeight: FontWeight.bold,
-            //       )),
-            // ),
           ],
         ));
   }
