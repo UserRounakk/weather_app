@@ -12,7 +12,11 @@ class Api {
         scheme: "https",
         host: baseUrl,
         path: "geo/1.0/direct",
-        queryParameters: {"q": city, "appid": appId});
+        queryParameters: {
+          "q": city,
+          "appid": appId,
+          "limit": "5",
+        });
     return await http.get(url, headers: {'Accept': 'application/json'});
   }
 
