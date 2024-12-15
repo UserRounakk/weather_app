@@ -6,6 +6,7 @@ import 'package:weather_app/pages/city.dart';
 import 'package:weather_app/resources/colors.dart';
 import 'package:weather_app/resources/dimensions.dart';
 import 'package:weather_app/resources/images.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -19,11 +20,24 @@ class _DashboardState extends State<Dashboard> {
   var lat = '';
   var lon = '';
   var city = '';
+  var suggestion = '';
 
   @override
   void initState() {
     getCoordinates();
     super.initState();
+  }
+
+  void getSuggestions(
+      String city, Map<String, String> coordinates, int temp) async {
+    Gemini.instance.prompt(parts: [
+      Part.text(
+          "Give me a short suggestion in like about 10 words according to the details given:- city: $city, lat: ${coordinates['lat']}, lon: ${coordinates['lon']}, temp: $temp, suppose if the weather is rainy give suggestion like 'the weather is rainy dont forget to carry an umbrella.'"),
+    ]).then((value) {
+      setState(() {
+        suggestion = value?.output ?? "No suggestion available";
+      });
+    });
   }
 
   void getCoordinates() async {
@@ -41,6 +55,10 @@ class _DashboardState extends State<Dashboard> {
   Future getWeather() async {
     var response = await Api.getWeather(lat, lon);
     var data = json.decode(response.body);
+    if (suggestion == "") {
+      getSuggestions(
+          city, {'lat': lat, 'lon': lon}, data['main']['temp'].round());
+    }
     return data;
   }
 
@@ -77,72 +95,202 @@ class _DashboardState extends State<Dashboard> {
         future: getWeather(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text(
-                    "Today's Report",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  height: height * 0.34,
-                  width: width,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(Images.gradient),
-                      fit: BoxFit.cover,
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Text(
+                      "Today's Report",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  child: Image.network(
-                      'https://itsnp.org/wp-content/uploads/2022/03/${snapshot.data['weather'][0]['icon']}.png'),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(snapshot.data['weather'][0]['description'],
-                          style: const TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      const SizedBox(
-                        height: 20,
+                  Container(
+                    height: height * 0.34,
+                    width: width,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(Images.gradient),
+                        fit: BoxFit.cover,
                       ),
-                      RichText(
-                          text: TextSpan(
-                              text: snapshot.data['main']['temp'] < 10
-                                  ? '0${snapshot.data['main']['temp'].round().toString()}'
-                                  : snapshot.data['main']['temp']
-                                      .round()
-                                      .toString(),
-                              style: const TextStyle(
-                                  fontSize: 60, fontWeight: FontWeight.bold),
-                              children: [
-                            WidgetSpan(
-                              child: Transform.translate(
-                                offset: const Offset(0.0, -15.0),
-                                child: const Text(
-                                  '°',
-                                  style: TextStyle(
-                                    fontSize: 60,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                    ),
+                    child: Image.network(
+                        'https://itsnp.org/wp-content/uploads/2022/03/${snapshot.data['weather'][0]['icon']}.png'),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(snapshot.data['weather'][0]['description'],
+                            style: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        RichText(
+                            text: TextSpan(
+                                text: snapshot.data['main']['temp'] < 10
+                                    ? '0${snapshot.data['main']['temp'].round().toString()}'
+                                    : snapshot.data['main']['temp']
+                                        .round()
+                                        .toString(),
+                                style: const TextStyle(
+                                    fontSize: 60, fontWeight: FontWeight.bold),
+                                children: [
+                              WidgetSpan(
+                                child: Transform.translate(
+                                  offset: const Offset(0.0, -15.0),
+                                  child: const Text(
+                                    '°',
+                                    style: TextStyle(
+                                      fontSize: 60,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ])),
-                    ],
+                            ])),
+                      ],
+                    ),
                   ),
-                )
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Humidity",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data['main']['humidity'].toString() +
+                                  "%",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Wind Speed",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data['wind']['speed'].toString() +
+                                  " m/s",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Pressure",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data['main']['pressure'].toString() +
+                                  " hPa",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Feels Like",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data['main']['feels_like'].toString() +
+                                  "°",
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        // display suggestion here
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Text(
+                          "Suggestion",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          suggestion,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             );
           } else if (snapshot.hasError) {
             return const Text('Cannot Display at the moment');
